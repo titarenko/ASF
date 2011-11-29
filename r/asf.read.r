@@ -18,6 +18,8 @@ asf.read = function(fileName)
 		body[[i]] = asf.read.frame(connection, frameHeight)
 	}
 	
+	close(connection)
+	
 	asf = list()
 
 	asf[["head"]] = head
