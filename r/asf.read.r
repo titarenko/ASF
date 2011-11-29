@@ -21,10 +21,10 @@ asf.open = function(fileName)
 
 asf.read.head = function(connection)
 {
-	head = c()
+	head = NULL
 	
 	isBodyFound = 0
-	while (length(line = readLines(connection, 1)) && !isBodyFound)
+	while (!isBodyFound && length((line = readLines(connection, 1))))
 	{
 		index = indexof(line, " ")
 		
@@ -51,14 +51,14 @@ asf.read.head = function(connection)
 
 asf.read.frame = function(connection, frameHeight)
 {
-	frame = c()
+	frame = list()
 	
-	if (length(line = readLines(connection, 1)) < 1)
+	if (!length((line = readLines(connection, 1))) || line != "")
 	{
 		throw("Can't find blank line before frame head.")
 	}
 	
-	if (length(line = readLines(connection, 1)) < 1)
+	if (!length((line = readLines(connection, 1))))
 	{
 		throw("Can't find frame head.")
 	}
@@ -73,8 +73,8 @@ asf.read.frame = function(connection, frameHeight)
 	{
 		frame["timestamp"] = -1
 	}
-	
-	frame["data"] = read.table(connection, sep=",", nrows=frameHeight)
+
+	frame["data"][[1]] = read.table(connection, sep=",", nrows=frameHeight)
 	
 	frame
 }
@@ -85,18 +85,20 @@ asf.read = function(fileName)
 	
 	head = asf.read.head(connection)
 	
-	framesCount = head["END_FRAME"] - head["START_FRAME"] + 1
-	frameHeight = head["ROWS"]
+	framesCount = as.numeric(head["END_FRAME"]) - as.numeric(head["START_FRAME"]) + 1
+	frameHeight = as.numeric(head["ROWS"])
 	
-	body = c()
+	body = list()
 	
 	for (i in 1:framesCount)
 	{
-		body[i] = asf.read.frame(connection, frameHeight)
+		body[[i]] = asf.read.frame(connection, frameHeight)
 	}
 	
-	asf["head"] = head
-	asf["body"] = body
+	asf = list()
+
+	asf[["head"]] = head
+	asf[["body"]] = body
 	
 	asf
 }
