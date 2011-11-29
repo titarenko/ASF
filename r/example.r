@@ -2,7 +2,7 @@
 source("asf.r")
 
 # reading of entire ASF file
-asf = asf.read("../examples/example1.asf")
+asf = asf.read("../../examples/example1.asf")
 
 # in order to access value from header 
 # you should do something like this
@@ -41,9 +41,9 @@ fifth[["data"]][3, 9]
 # (if you are curious please read, for example, 
 # http://r.789695.n4.nabble.com/Issue-with-seek-on-gzipped-connections-in-R-devel-td3836934.html)
 
-inputFileName = "../examples/example1.asf"
-intermediateFileName = "gzipped1.asf.gz"
-outputFileName = "ungzipped1.asf"
+inputFileName = "../../examples/example1.asf"
+intermediateFileName = "../gzipped1.asf.gz"
+outputFileName = "../ungzipped1.asf"
 
 # reading plain ASF
 asf = asf.read(inputFileName)
