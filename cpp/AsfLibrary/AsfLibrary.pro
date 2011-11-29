@@ -14,3 +14,5 @@ HEADERS += \
     AsfFile.h \
     csv_istream_iterator.h \
     from_string.h
+
+INCLUDEPATH += ../GZip

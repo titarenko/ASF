@@ -1,5 +1,7 @@
 TEMPLATE = subdirs
-SUBDIRS = AsfLibrary \
-          AsfViewer
+
+SUBDIRS = GZip \
+    AsfLibrary \
+    AsfViewer
 
 CONFIG += ordered

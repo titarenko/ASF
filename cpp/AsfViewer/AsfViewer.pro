@@ -12,12 +12,15 @@ FORMS += MainWindow.ui
 
 debug {
     LIBS += ../AsfLibrary/debug/libAsf.a
+    LIBS += ../GZip/debug/libGZip.a
 }
 
 release {
     LIBS += ../AsfLibrary/release/libAsf.a
+    LIBS += ../GZip/release/libGZip.a
 }
 
-INCLUDEPATH += ../AsfLibrary
+INCLUDEPATH += ../AsfLibrary \
+    ../GZip
 
 RESOURCES += resources.qrc
