@@ -6,12 +6,12 @@ asf.read.frame = function(connection, frameHeight)
 	
 	if (!length((line = readLines(connection, 1))) || line != "")
 	{
-		throw("Can't find blank line before frame head.")
+		stop("Can't find blank line before frame head.")
 	}
 	
 	if (!length((line = readLines(connection, 1))))
 	{
-		throw("Can't find frame head.")
+		stop("Can't find frame head.")
 	}
 	
 	index = indexof(line, "p")

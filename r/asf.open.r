@@ -14,7 +14,7 @@ asf.open = function(fileName, interactionMode)
 	}
 	else
 	{
-		throw("Unknown file format (unknown extension).")
+		stop("Unknown file format (unknown extension).")
 	}
 }
 

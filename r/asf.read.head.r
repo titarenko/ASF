@@ -23,7 +23,7 @@ asf.read.head = function(connection)
 	
 	if (!isBodyFound)
 	{
-		throw ("Head is not followed by body.")
+		stop("Head is not followed by body.")
 	}
 	
 	head
