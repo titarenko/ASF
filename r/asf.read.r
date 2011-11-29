@@ -4,7 +4,7 @@
 # you should avoid reading of large files with it.
 asf.read = function(fileName)
 {
-	connection = asf.open(fileName)
+	connection = asf.open.read(fileName)
 	
 	head = asf.read.head(connection)
 	

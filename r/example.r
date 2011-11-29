@@ -1,3 +1,6 @@
+# including of ASF library sources
+source("asf.r")
+
 # reading of entire ASF file
 asf = asf.read("../examples/example1.asf")
 
