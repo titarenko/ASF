@@ -37,7 +37,9 @@ fifth[["data"]][3, 9]
 # you can read/write not only plain ASF files
 # but gzipped ones too
 # please pay attention that some warnings are possible
-# when you are interacting with gzipped ASF's (if you are curious please read, for example, http://r.789695.n4.nabble.com/Issue-with-seek-on-gzipped-connections-in-R-devel-td3836934.html)
+# when you are interacting with gzipped ASF's 
+# (if you are curious please read, for example, 
+# http://r.789695.n4.nabble.com/Issue-with-seek-on-gzipped-connections-in-R-devel-td3836934.html)
 
 inputFileName = "../examples/example1.asf"
 intermediateFileName = "gzipped1.asf.gz"
