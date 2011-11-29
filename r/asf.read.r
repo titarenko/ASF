@@ -1,8 +1,12 @@
+# Returns index of first occurrence of <what> in <where>,
+# or -1 if <what> can't be found in <where>.
 indexof = function(where, what)
 {
 	regexpr(what, where)[1]
 }
 
+# Opens connection using provided <fileName>.
+# Both plain and gzipped files are supported.
 asf.open = function(fileName)
 {
 	if (indexof(fileName, ".asf.gz") > 0)
@@ -19,6 +23,7 @@ asf.open = function(fileName)
 	}
 }
 
+# Reads ASF header (key/value storage) as named vector.
 asf.read.head = function(connection)
 {
 	head = NULL
@@ -49,6 +54,8 @@ asf.read.head = function(connection)
 	head
 }
 
+# Reads ASF frame as named list with keys "timestamp" and "data",
+# where data is actually frame itself.
 asf.read.frame = function(connection, frameHeight)
 {
 	frame = list()
@@ -66,19 +73,23 @@ asf.read.frame = function(connection, frameHeight)
 	index = indexof(line, "p")
 	if (index > 0)
 	{
-		frame["timestamp"] = as.numeric(substring(line, index + 1))
+		frame[["timestamp"]] = as.numeric(substring(line, index + 1))
 	}
 	
-	if (!isTRUE(frame["timestamp"]))
+	if (!isTRUE(frame[["timestamp"]]))
 	{
-		frame["timestamp"] = -1
+		frame[["timestamp"]] = -1
 	}
 
-	frame["data"][[1]] = read.table(connection, sep=",", nrows=frameHeight)
+	frame[["data"]] = read.table(connection, sep=",", nrows=frameHeight)
 	
 	frame
 }
 
+# Reads (entire) ASF file as named list with keys "head" and "body" for
+# ASF header and ASF body (that consists of frames).
+# Since this function reads whole file, 
+# you should avoid reading of large files with it.
 asf.read = function(fileName)
 {
 	connection = asf.open(fileName)
