@@ -32,12 +32,24 @@ void MainWindow::on_actionOpen_ASF_triggered()
 
 void MainWindow::on_actionSave_ASF_triggered()
 {
-    QMessageBox::information(this, "Save ASF", "Not implemented yet");
+    QString fileName = QFileDialog::getSaveFileName(
+                this, "Save ASF", ".", "ASF files (*.asf)");
+
+    if (!fileName.isNull())
+    {
+        save(fileName.toStdString().c_str());
+    }
 }
 
 void MainWindow::on_actionSave_GZipped_ASF_triggered()
 {
-    QMessageBox::information(this, "Save GZipped ASF", "Not implemented yet");
+    QString fileName = QFileDialog::getSaveFileName(
+                this, "Save ASF", ".", "GZipped ASF files (*.asf.gz)");
+
+    if (!fileName.isNull())
+    {
+        save(fileName.toStdString().c_str());
+    }
 }
 
 void MainWindow::on_actionAbout_triggered()
@@ -58,10 +70,7 @@ void MainWindow::loadFile()
     QString fileName = QFileDialog::getOpenFileName(
                 this, "Open ASF", ".", "ASF files (*.asf);;GZipped ASF files (*.asf.gz)");
 
-    if (fileName.isNull() || fileName.isEmpty())
-    {
-        return;
-    }
+    if (fileName.isNull()) return;
 
     delete file;
     file = new AsfFile(fileName.toStdString().c_str(), 1024);
@@ -125,5 +134,6 @@ void MainWindow::setFrame(int index)
 
 void MainWindow::save(const char *fileName)
 {
-
+    if (!file) return;
+    file->save(fileName);
 }

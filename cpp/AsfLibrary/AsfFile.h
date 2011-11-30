@@ -22,7 +22,7 @@ public:
 
     const asf_head& getHead() const;
 
-    void save(const char* fileName) const;
+    void save(const char* fileName);
 
 private:
     std::istream* _stream;

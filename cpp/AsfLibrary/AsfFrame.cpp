@@ -58,33 +58,35 @@ void AsfFrame::shrink()
     _loaded = false;
 }
 
-struct writer
+class writer
 {
-    std::ostream& stream;
-    int width;
-    int index;
-
+public:
     writer(std::ostream& stream, int width)
-        : stream(stream)
-        , width(width)
-        , index(0) {}
+        : _stream(stream)
+        , _width(width)
+        , _index(0) {}
 
-    void operator () (char value)
+    void operator () (unsigned char value)
     {
-        stream << (int) value;
-        if (index++ == width)
+        _stream << (int) value;
+        if (++_index == _width)
         {
-            stream << std::endl;
-            index = 0;
+            _stream << std::endl;
+            _index = 0;
         }
         else
         {
-            stream << ",";
+            _stream << ",";
         }
     }
+
+private:
+    std::ostream& _stream;
+    int _width;
+    int _index;
 };
 
-void AsfFrame::save(std::ostream &stream, int number) const
+void AsfFrame::save(std::ostream &stream, int number)
 {
     if (!_loaded)
     {
@@ -93,13 +95,11 @@ void AsfFrame::save(std::ostream &stream, int number) const
 
     stream << std::endl;
     stream << "Frame " << number;
-
     if (_timestamp != -1)
     {
         stream << ", timestamp " << _timestamp;
     }
-
-    stream << endl;
+    stream << std::endl;
 
     std::for_each(_data.begin(), _data.end(), writer(stream, _width));
 }

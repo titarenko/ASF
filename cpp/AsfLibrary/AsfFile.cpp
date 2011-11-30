@@ -75,35 +75,39 @@ const asf_head& AsfFile::getHead() const
     return _head;
 }
 
-struct head_writer
+class head_writer
 {
-    std::ostream& stream;
-
+public:
     head_writer(std::ostream& stream)
-        : stream(stream) {}
+        : _stream(stream) {}
 
-    void operator () (asf_head::const_iterator& it)
+    void operator () (std::pair<const std::string, std::string>& it)
     {
-        stream << it->first << " " << it->second << std::endl;
+        _stream << it.first << " " << it.second << std::endl;
     }
+
+private:
+    std::ostream& _stream;
 };
 
-struct body_writer
+class body_writer
 {
-    std::ostream& stream;
-    int frameNumber;
-
+public:
     body_writer(std::ostream& stream, int startFrame)
-        : stream(stream)
-        , frameNumber(startFrame) {}
+        : _stream(stream)
+        , _frameNumber(startFrame) {}
 
-    void operator () (const AsfFrame& frame)
+    void operator () (AsfFrame& frame)
     {
-        frame.save(stream, frameNumber++);
+        frame.save(_stream, _frameNumber++);
     }
+
+private:
+    std::ostream& _stream;
+    int _frameNumber;
 };
 
-void AsfFile::save(const char *fileName) const
+void AsfFile::save(const char *fileName)
 {
     std::ofstream stream(fileName, std::ios::binary | std::ios::out);
 
@@ -113,13 +117,12 @@ void AsfFile::save(const char *fileName) const
     }
 
     std::for_each(_head.begin(), _head.end(), head_writer(stream));
-
-    stream << "ASCII_DATA @@";
+    stream << "ASCII_DATA @@" << std::endl;
 
     int startFrame = from_string<int>(_head["START_FRAME"]);
-    std::for_each(_head.begin(), _head.end(), body_writer(stream, startFrame));
+    std::for_each(_body.begin(), _body.end(), body_writer(stream, startFrame));
 
-    stream << "@@" << endl;
+    stream << "@@" << std::endl;
 }
 
 void AsfFile::readHead()
