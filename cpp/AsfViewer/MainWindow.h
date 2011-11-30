@@ -33,6 +33,8 @@ private:
     void prepareUi();
     void populateUi();
     void setFrame(int index);
+
+    void save(const char* fileName);
 };
 
 #endif // MAINWINDOW_H

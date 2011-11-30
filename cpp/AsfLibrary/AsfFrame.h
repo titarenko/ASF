@@ -21,6 +21,8 @@ public:
 
     void shrink();
 
+    void save(std::ostream& stream, int number) const;
+
 private:
     std::istream* _stream;
     int _offset;

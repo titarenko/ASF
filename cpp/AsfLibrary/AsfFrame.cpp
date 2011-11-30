@@ -2,6 +2,8 @@
 #include "Exception.h"
 #include "csv_istream_iterator.h"
 
+#include <algorithm>
+
 AsfFrame::AsfFrame(int width, int height, int timestamp, std::istream& stream,
                    bool isPositioningDenied = false)
     : _stream(&stream)
@@ -54,6 +56,52 @@ void AsfFrame::shrink()
     _data.swap(other);
 
     _loaded = false;
+}
+
+struct writer
+{
+    std::ostream& stream;
+    int width;
+    int index;
+
+    writer(std::ostream& stream, int width)
+        : stream(stream)
+        , width(width)
+        , index(0) {}
+
+    void operator () (char value)
+    {
+        stream << (int) value;
+        if (index++ == width)
+        {
+            stream << std::endl;
+            index = 0;
+        }
+        else
+        {
+            stream << ",";
+        }
+    }
+};
+
+void AsfFrame::save(std::ostream &stream, int number) const
+{
+    if (!_loaded)
+    {
+        getData();
+    }
+
+    stream << std::endl;
+    stream << "Frame " << number;
+
+    if (_timestamp != -1)
+    {
+        stream << ", timestamp " << _timestamp;
+    }
+
+    stream << endl;
+
+    std::for_each(_data.begin(), _data.end(), writer(stream, _width));
 }
 
 void AsfFrame::read()

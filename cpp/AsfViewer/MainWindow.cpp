@@ -122,3 +122,8 @@ void MainWindow::setFrame(int index)
                             ? "N/A"
                             : QString::number(frameTimestamp)));
 }
+
+void MainWindow::save(const char *fileName)
+{
+
+}
