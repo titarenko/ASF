@@ -22,6 +22,8 @@ public:
 
     const asf_head& getHead() const;
 
+    void save(const char* fileName) const;
+
 private:
     std::istream* _stream;
     bool _isPositioningDenied;

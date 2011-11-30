@@ -75,6 +75,53 @@ const asf_head& AsfFile::getHead() const
     return _head;
 }
 
+struct head_writer
+{
+    std::ostream& stream;
+
+    head_writer(std::ostream& stream)
+        : stream(stream) {}
+
+    void operator () (asf_head::const_iterator& it)
+    {
+        stream << it->first << " " << it->second << std::endl;
+    }
+};
+
+struct body_writer
+{
+    std::ostream& stream;
+    int frameNumber;
+
+    body_writer(std::ostream& stream, int startFrame)
+        : stream(stream)
+        , frameNumber(startFrame) {}
+
+    void operator () (const AsfFrame& frame)
+    {
+        frame.save(stream, frameNumber++);
+    }
+};
+
+void AsfFile::save(const char *fileName) const
+{
+    std::ofstream stream(fileName, std::ios::binary | std::ios::out);
+
+    if (!stream.good())
+    {
+        THROW_EXCEPTION("Can't save file.");
+    }
+
+    std::for_each(_head.begin(), _head.end(), head_writer(stream));
+
+    stream << "ASCII_DATA @@";
+
+    int startFrame = from_string<int>(_head["START_FRAME"]);
+    std::for_each(_head.begin(), _head.end(), body_writer(stream, startFrame));
+
+    stream << "@@" << endl;
+}
+
 void AsfFile::readHead()
 {
     bool foundAsciiData = false;
