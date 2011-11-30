@@ -6,7 +6,7 @@
 /*!
     For internal use.
 */
-class Exception : std::exception
+class Exception : public std::exception
 {
 public:
     Exception(const char* what) : _what(what) {}

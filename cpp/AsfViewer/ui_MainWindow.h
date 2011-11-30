@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'MainWindow.ui'
 **
-** Created: Wed 30. Nov 03:16:06 2011
+** Created: Wed 30. Nov 21:04:53 2011
 **      by: Qt User Interface Compiler version 4.7.4
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -137,7 +137,7 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Asf Viewer", 0, QApplication::UnicodeUTF8));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "ASF Viewer", 0, QApplication::UnicodeUTF8));
         actionOpen_ASF->setText(QApplication::translate("MainWindow", "Open ASF", 0, QApplication::UnicodeUTF8));
         actionOpen_ASF->setShortcut(QApplication::translate("MainWindow", "Ctrl+O", 0, QApplication::UnicodeUTF8));
         actionSave_ASF->setText(QApplication::translate("MainWindow", "Save ASF", 0, QApplication::UnicodeUTF8));

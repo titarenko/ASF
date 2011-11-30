@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Asf Viewer</string>
+   <string>ASF Viewer</string>
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">

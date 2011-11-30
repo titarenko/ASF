@@ -3,8 +3,31 @@
 #include "AsfFile.h"
 #include "from_string.h"
 
+#include <exception>
+
 #include <QFileDialog>
 #include <QMessageBox>
+
+#define TRY_OR_WARN(expression) \
+    try \
+    { \
+        expression; \
+    } \
+    catch (std::exception& e) \
+    { \
+        QMessageBox::critical(this, "Error", e.what()); \
+    }
+
+#define TRY_OR_WARN_EX(expression, cleanup) \
+    try \
+    { \
+        expression; \
+    } \
+    catch (std::exception& e) \
+    { \
+        QMessageBox::critical(this, "Error", e.what()); \
+        cleanup; \
+    }
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -73,7 +96,7 @@ void MainWindow::loadFile()
     if (fileName.isNull()) return;
 
     delete file;
-    file = new AsfFile(fileName.toStdString().c_str(), 1024);
+    TRY_OR_WARN_EX(file = new AsfFile(fileName.toStdString().c_str(), 1024), file = 0);
 }
 
 void MainWindow::prepareUi()
@@ -115,7 +138,7 @@ void MainWindow::setFrame(int index)
 {
     if (!file) return;
 
-    AsfFrame frame = file->getFrame(index);
+    AsfFrame& frame = file->getFrame(index);
 
     QImage image((const uchar*) frame.getData(),
         frame.getWidth(), frame.getHeight(), QImage::Format_Indexed8);
@@ -135,5 +158,5 @@ void MainWindow::setFrame(int index)
 void MainWindow::save(const char *fileName)
 {
     if (!file) return;
-    file->save(fileName);
+    TRY_OR_WARN(file->save(fileName));
 }
