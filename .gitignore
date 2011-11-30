@@ -1,4 +1,6 @@
 debug
 release
+*.Debug
+*.Release
 Makefile*
 *.pro.user
