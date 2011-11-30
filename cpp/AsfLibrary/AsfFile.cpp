@@ -17,11 +17,13 @@ AsfFile::AsfFile(const char *fileName, int memoryLimitInBytes)
     {
         _stream = (std::istream*) new igzstream(fileName,
             std::ios::in | std::ios::binary);
+        _isPositioningDenied = true;
     }
     else if (last == 'f')
     {
         _stream = new std::ifstream(fileName,
             std::ios::in | std::ios::binary);
+        _isPositioningDenied = false;
     }
     else
     {
@@ -137,6 +139,6 @@ void AsfFile::readBody()
         }
 
         _body.push_back(AsfFrame(frameWidth, frameHeight,
-                                 timestamp, *_stream));
+                                 timestamp, *_stream, _isPositioningDenied));
     }
 }

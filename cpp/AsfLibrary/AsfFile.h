@@ -24,6 +24,8 @@ public:
 
 private:
     std::istream* _stream;
+    bool _isPositioningDenied;
+
     asf_head _head;
     std::vector<AsfFrame> _body;
 

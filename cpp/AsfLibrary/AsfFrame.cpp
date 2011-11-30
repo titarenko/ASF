@@ -2,9 +2,10 @@
 #include "Exception.h"
 #include "csv_istream_iterator.h"
 
-AsfFrame::AsfFrame(int width, int height, int timestamp, std::istream& stream)
+AsfFrame::AsfFrame(int width, int height, int timestamp, std::istream& stream,
+                   bool isPositioningDenied = false)
     : _stream(&stream)
-    , _offset(stream.tellg())
+    , _offset(isPositioningDenied ? -1 : (int) stream.tellg())
     , _width(width)
     , _height(height)
     , _timestamp(timestamp)
@@ -28,16 +29,6 @@ int AsfFrame::getTimestamp() const
     return _timestamp;
 }
 
-int AsfFrame::getData(int x, int y)
-{
-    if (!_loaded)
-    {
-        load();
-    }
-
-    return _data[y*_width + x];
-}
-
 char* AsfFrame::getData()
 {
     if (!_loaded)
@@ -55,20 +46,34 @@ int AsfFrame::getUsedBytesCount() const
 
 void AsfFrame::shrink()
 {
+    // don't perform shrink as frame won't be loaded
+    // again since positioning is denied
+    if (_offset == -1) return;
+
     std::vector<char> other;
     _data.swap(other);
+
     _loaded = false;
 }
 
 void AsfFrame::read()
 {
-    std::string line;
-    for (int rowIndex = 0; rowIndex < _height; ++rowIndex)
+    if (_offset != -1)
     {
-        if (!std::getline(*_stream, line))
+        std::string line;
+        for (int rowIndex = 0; rowIndex < _height; ++rowIndex)
         {
-            THROW_EXCEPTION("Can't read next row of ASF frame.");
+            if (!std::getline(*_stream, line))
+            {
+                THROW_EXCEPTION("Can't read next row of ASF frame.");
+            }
         }
+    }
+    // eagerly load data because frame won't be loaded
+    // later since positioning is denied
+    else
+    {
+        load();
     }
 }
 
@@ -77,7 +82,12 @@ void AsfFrame::load()
     std::string line;
     std::istringstream substream;
 
-    _stream->seekg(_offset, std::ios::beg);
+    // if positioning is not denied
+    if (_offset > 0)
+    {
+        _stream->seekg(_offset, std::ios::beg);
+    }
+
     _data.resize(_width*_height);
 
     for (int rowIndex = 0; rowIndex < _height; ++rowIndex)
@@ -87,7 +97,7 @@ void AsfFrame::load()
             THROW_EXCEPTION("Can't read next row of ASF frame.");
         }
 
-		substream.clear();
+        substream.clear();
         substream.str(line);
 		
         std::copy(csv_istream_iterator<int>(substream),

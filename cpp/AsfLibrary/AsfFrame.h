@@ -8,13 +8,13 @@ class AsfFrame
 {
 public:
     AsfFrame(int width, int height,
-             int timestamp, std::istream& stream);
+             int timestamp, std::istream& stream,
+             bool isPositioningDenied);
 
     int getWidth() const;
     int getHeight() const;
     int getTimestamp() const;
 
-    int getData(int x, int y);
     char* getData();
 
     int getUsedBytesCount() const;
