@@ -1,7 +1,7 @@
 #ifndef ASFFILE_H
 #define ASFFILE_H
 
-#include <fstream>
+#include <istream>
 #include <map>
 #include <string>
 #include <vector>
@@ -14,6 +14,7 @@ class AsfFile
 {
 public:
     AsfFile(const char* fileName, int memoryLimitInBytes = 0);
+    ~AsfFile();
 
     int getFramesCount() const;
 
@@ -22,7 +23,7 @@ public:
     const asf_head& getHead() const;
 
 private:
-    std::ifstream _stream;
+    std::istream* _stream;
     asf_head _head;
     std::vector<AsfFrame> _body;
 

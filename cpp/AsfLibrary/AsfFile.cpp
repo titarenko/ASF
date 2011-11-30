@@ -5,18 +5,41 @@
 #include <fstream>
 #include <numeric>
 #include <algorithm>
+#include <string>
+
+#include "gzstream.h"
 
 AsfFile::AsfFile(const char *fileName, int memoryLimitInBytes)
-	: _stream(fileName, std::ios::binary)
-    , _memoryLimitInBytes(memoryLimitInBytes)
+    : _memoryLimitInBytes(memoryLimitInBytes)
 {
-    if (!_stream.is_open())
+    char last = *std::string(fileName).rbegin();
+    if (last == 'z')
+    {
+        _stream = (std::istream*) new igzstream(fileName,
+            std::ios::in | std::ios::binary);
+    }
+    else if (last == 'f')
+    {
+        _stream = new std::ifstream(fileName,
+            std::ios::in | std::ios::binary);
+    }
+    else
+    {
+        THROW_EXCEPTION("Unknown file format.");
+    }
+
+    if (!_stream->good())
     {
         THROW_EXCEPTION("Can't open ASF file.");
     }
 
     readHead();
     readBody();
+}
+
+AsfFile::~AsfFile()
+{
+    delete _stream;
 }
 
 int AsfFile::getFramesCount() const
@@ -55,7 +78,7 @@ void AsfFile::readHead()
     bool foundAsciiData = false;
 
     std::string line;
-    while (!foundAsciiData && std::getline(_stream, line))
+    while (!foundAsciiData && std::getline(*_stream, line))
     {
         int index = line.find(' ');
 
@@ -94,12 +117,12 @@ void AsfFile::readBody()
     std::string line;
     while (framesCount--)
     {
-        if (!std::getline(_stream, line))
+        if (!std::getline(*_stream, line))
         {
             THROW_EXCEPTION("There is no blank line before ASF frame definition.");
         }
 
-        if (!std::getline(_stream, line))
+        if (!std::getline(*_stream, line))
         {
             THROW_EXCEPTION("There is no ASF frame header.");
         }
@@ -114,6 +137,6 @@ void AsfFile::readBody()
         }
 
         _body.push_back(AsfFrame(frameWidth, frameHeight,
-                                 timestamp, _stream));
+                                 timestamp, *_stream));
     }
 }

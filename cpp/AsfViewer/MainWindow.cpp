@@ -56,7 +56,7 @@ void MainWindow::on_horizontalSlider_valueChanged(int value)
 void MainWindow::loadFile()
 {
     QString fileName = QFileDialog::getOpenFileName(
-                this, "Open ASF", ".", "ASF files (*.asf)");
+                this, "Open ASF", ".", "ASF files (*.asf);;GZipped ASF files (*.asf.gz)");
 
     if (fileName.isNull() || fileName.isEmpty())
     {
@@ -104,6 +104,8 @@ void MainWindow::populateUi()
 
 void MainWindow::setFrame(int index)
 {
+    if (!file) return;
+
     AsfFrame frame = file->getFrame(index);
 
     QImage image((const uchar*) frame.getData(),
