@@ -109,20 +109,24 @@ private:
 
 void AsfFile::save(const char *fileName)
 {
-    std::ofstream stream(fileName, std::ios::binary | std::ios::out);
+    std::ostream* stream = *std::string(fileName).rbegin() == 'z'
+            ? (std::ostream*) new ogzstream(fileName, std::ios::binary | std::ios::out)
+            : new std::ofstream(fileName, std::ios::binary | std::ios::out);
 
-    if (!stream.good())
+    if (!stream->good())
     {
         THROW_EXCEPTION("Can't save file.");
     }
 
-    std::for_each(_head.begin(), _head.end(), head_writer(stream));
-    stream << "ASCII_DATA @@" << std::endl;
+    std::for_each(_head.begin(), _head.end(), head_writer(*stream));
+    *stream << "ASCII_DATA @@" << std::endl;
 
     int startFrame = from_string<int>(_head["START_FRAME"]);
-    std::for_each(_body.begin(), _body.end(), body_writer(stream, startFrame));
+    std::for_each(_body.begin(), _body.end(), body_writer(*stream, startFrame));
 
-    stream << "@@" << std::endl;
+    *stream << "@@" << std::endl;
+
+    delete stream;
 }
 
 void AsfFile::readHead()

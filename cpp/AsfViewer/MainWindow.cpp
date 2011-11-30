@@ -44,7 +44,7 @@ void MainWindow::on_actionSave_ASF_triggered()
 void MainWindow::on_actionSave_GZipped_ASF_triggered()
 {
     QString fileName = QFileDialog::getSaveFileName(
-                this, "Save ASF", ".", "GZipped ASF files (*.asf.gz)");
+                this, "Save GZipped ASF", ".", "GZipped ASF files (*.asf.gz)");
 
     if (!fileName.isNull())
     {
@@ -55,7 +55,7 @@ void MainWindow::on_actionSave_GZipped_ASF_triggered()
 void MainWindow::on_actionAbout_triggered()
 {
     QMessageBox::about(this, "About",
-        "Asf Viewer\nby Constantin Titarenko, 2011"
+        "ASF Viewer\nby Constantin Titarenko, 2011\n"
         "\nEmail: constantin.titarenko@gmail.com"
         "\nWeb: http://about.me/constantin.titarenko");
 }
